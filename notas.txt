@@ -1,0 +1,15 @@
+https://github.com/Kong/charts/blob/main/charts/kong/README.md
+https://github.com/Kong/docker-kong/blob/master/Dockerfile.deb
+https://docs.konghq.com/gateway/3.4.x/install/kubernetes/proxy/
+
+
+
+https://github.com/Kong/kong?tab=readme-ov-file
+
+
+https://elwillie.es/tag/kong/
+
+
+
+https://medium.com/@martin.hodges/using-kong-to-access-kubernetes-services-using-a-gateway-resource-with-no-cloud-provided-8a1bcd396be9
+https://github.com/kubernetes-sigs/gateway-api/releases/tag/v1.2.0

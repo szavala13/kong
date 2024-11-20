@@ -1,0 +1,155 @@
+Name:                   kong-cp-kong
+Namespace:              default
+CreationTimestamp:      Sat, 16 Nov 2024 01:46:43 -0600
+Labels:                 app.kubernetes.io/component=app
+                        app.kubernetes.io/instance=kong-cp
+                        app.kubernetes.io/managed-by=Helm
+                        app.kubernetes.io/name=kong
+                        app.kubernetes.io/version=3.4
+                        helm.sh/chart=kong-2.42.0
+Annotations:            deployment.kubernetes.io/revision: 1
+                        meta.helm.sh/release-name: kong-cp
+                        meta.helm.sh/release-namespace: default
+Selector:               app.kubernetes.io/component=app,app.kubernetes.io/instance=kong-cp,app.kubernetes.io/name=kong
+Replicas:               1 desired | 1 updated | 1 total | 0 available | 1 unavailable
+StrategyType:           RollingUpdate
+MinReadySeconds:        0
+RollingUpdateStrategy:  25% max unavailable, 25% max surge
+Pod Template:
+  Labels:           app=kong-cp-kong
+                    app.kubernetes.io/component=app
+                    app.kubernetes.io/instance=kong-cp
+                    app.kubernetes.io/managed-by=Helm
+                    app.kubernetes.io/name=kong
+                    app.kubernetes.io/version=3.4
+                    helm.sh/chart=kong-2.42.0
+                    version=3.4
+  Annotations:      kuma.io/gateway: enabled
+                    kuma.io/service-account-token-volume: kong-cp-kong-token
+                    traffic.sidecar.istio.io/includeInboundPorts: 
+  Service Account:  kong-cp-kong
+  Init Containers:
+   clear-stale-pid:
+    Image:           sazp/kong-image:3.4.3.12
+    Port:            <none>
+    Host Port:       <none>
+    SeccompProfile:  RuntimeDefault
+    Command:
+      rm
+      -vrf
+      $KONG_PREFIX/pids
+    Environment:
+      KONG_ADMIN_ACCESS_LOG:          /dev/stdout
+      KONG_ADMIN_ERROR_LOG:           /dev/stderr
+      KONG_ADMIN_GUI_ACCESS_LOG:      /dev/stdout
+      KONG_ADMIN_GUI_ERROR_LOG:       /dev/stderr
+      KONG_ADMIN_GUI_LISTEN:          0.0.0.0:8002, [::]:8002, 0.0.0.0:8445 http2 ssl, [::]:8445 http2 ssl
+      KONG_ADMIN_LISTEN:              0.0.0.0:8001, [::]:8001, 0.0.0.0:8444 http2 ssl, [::]:8444 http2 ssl
+      KONG_CLUSTER_CERT:              /etc/secrets/kong-cluster-cert/tls.crt
+      KONG_CLUSTER_CERT_KEY:          /etc/secrets/kong-cluster-cert/tls.key
+      KONG_CLUSTER_LISTEN:            0.0.0.0:8005 ssl, [::]:8005 ssl
+      KONG_CLUSTER_TELEMETRY_LISTEN:  0.0.0.0:8006 ssl, [::]:8006 ssl
+      KONG_DATABASE:                  off
+      KONG_LICENSE_DATA:              <set to the key 'license' in secret 'kong-enterprise-license'>  Optional: false
+      KONG_LUA_PACKAGE_PATH:          /opt/?.lua;/opt/?/init.lua;;
+      KONG_NGINX_WORKER_PROCESSES:    2
+      KONG_PASSWORD:                  hola1010
+      KONG_PORTAL_API_ACCESS_LOG:     /dev/stdout
+      KONG_PORTAL_API_ERROR_LOG:      /dev/stderr
+      KONG_PORTAL_GUI_ACCESS_LOG:     /dev/stdout
+      KONG_PORTAL_GUI_ERROR_LOG:      /dev/stderr
+      KONG_PREFIX:                    /kong_prefix/
+      KONG_PROXY_ACCESS_LOG:          /dev/stdout
+      KONG_PROXY_ERROR_LOG:           /dev/stderr
+      KONG_PROXY_LISTEN:              0.0.0.0:8000, [::]:8000, 0.0.0.0:8443 http2 ssl, [::]:8443 http2 ssl
+      KONG_PROXY_STREAM_ACCESS_LOG:   /dev/stdout basic
+      KONG_PROXY_STREAM_ERROR_LOG:    /dev/stderr
+      KONG_ROLE:                      control_plane
+      KONG_ROUTER_FLAVOR:             traditional
+      KONG_SMTP_MOCK:                 on
+      KONG_STATUS_ACCESS_LOG:         off
+      KONG_STATUS_ERROR_LOG:          /dev/stderr
+      KONG_STATUS_LISTEN:             0.0.0.0:8100, [::]:8100
+      KONG_STREAM_LISTEN:             off
+    Mounts:
+      /etc/secrets/kong-cluster-cert from kong-cluster-cert (rw)
+      /kong_prefix/ from kong-cp-kong-prefix-dir (rw)
+      /tmp from kong-cp-kong-tmp (rw)
+  Containers:
+   proxy:
+    Image:           sazp/kong-image:3.4.3.12
+    Ports:           8001/TCP, 8444/TCP, 8100/TCP, 8005/TCP, 8006/TCP
+    Host Ports:      0/TCP, 0/TCP, 0/TCP, 0/TCP, 0/TCP
+    SeccompProfile:  RuntimeDefault
+    Liveness:        http-get http://:status/status delay=5s timeout=5s period=10s #success=1 #failure=3
+    Readiness:       http-get http://:status/status/ready delay=5s timeout=5s period=10s #success=1 #failure=3
+    Environment:
+      KONG_ADMIN_ACCESS_LOG:          /dev/stdout
+      KONG_ADMIN_ERROR_LOG:           /dev/stderr
+      KONG_ADMIN_GUI_ACCESS_LOG:      /dev/stdout
+      KONG_ADMIN_GUI_ERROR_LOG:       /dev/stderr
+      KONG_ADMIN_GUI_LISTEN:          0.0.0.0:8002, [::]:8002, 0.0.0.0:8445 http2 ssl, [::]:8445 http2 ssl
+      KONG_ADMIN_LISTEN:              0.0.0.0:8001, [::]:8001, 0.0.0.0:8444 http2 ssl, [::]:8444 http2 ssl
+      KONG_CLUSTER_CERT:              /etc/secrets/kong-cluster-cert/tls.crt
+      KONG_CLUSTER_CERT_KEY:          /etc/secrets/kong-cluster-cert/tls.key
+      KONG_CLUSTER_LISTEN:            0.0.0.0:8005 ssl, [::]:8005 ssl
+      KONG_CLUSTER_TELEMETRY_LISTEN:  0.0.0.0:8006 ssl, [::]:8006 ssl
+      KONG_DATABASE:                  off
+      KONG_LICENSE_DATA:              <set to the key 'license' in secret 'kong-enterprise-license'>  Optional: false
+      KONG_LUA_PACKAGE_PATH:          /opt/?.lua;/opt/?/init.lua;;
+      KONG_NGINX_WORKER_PROCESSES:    2
+      KONG_PASSWORD:                  hola1010
+      KONG_PORTAL_API_ACCESS_LOG:     /dev/stdout
+      KONG_PORTAL_API_ERROR_LOG:      /dev/stderr
+      KONG_PORTAL_GUI_ACCESS_LOG:     /dev/stdout
+      KONG_PORTAL_GUI_ERROR_LOG:      /dev/stderr
+      KONG_PREFIX:                    /kong_prefix/
+      KONG_PROXY_ACCESS_LOG:          /dev/stdout
+      KONG_PROXY_ERROR_LOG:           /dev/stderr
+      KONG_PROXY_LISTEN:              0.0.0.0:8000, [::]:8000, 0.0.0.0:8443 http2 ssl, [::]:8443 http2 ssl
+      KONG_PROXY_STREAM_ACCESS_LOG:   /dev/stdout basic
+      KONG_PROXY_STREAM_ERROR_LOG:    /dev/stderr
+      KONG_ROLE:                      control_plane
+      KONG_ROUTER_FLAVOR:             traditional
+      KONG_SMTP_MOCK:                 on
+      KONG_STATUS_ACCESS_LOG:         off
+      KONG_STATUS_ERROR_LOG:          /dev/stderr
+      KONG_STATUS_LISTEN:             0.0.0.0:8100, [::]:8100
+      KONG_STREAM_LISTEN:             off
+      KONG_NGINX_DAEMON:              off
+    Mounts:
+      /etc/secrets/kong-cluster-cert from kong-cluster-cert (rw)
+      /kong_prefix/ from kong-cp-kong-prefix-dir (rw)
+      /tmp from kong-cp-kong-tmp (rw)
+  Volumes:
+   kong-cp-kong-prefix-dir:
+    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:     
+    SizeLimit:  256Mi
+   kong-cp-kong-tmp:
+    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:     
+    SizeLimit:  1Gi
+   kong-cp-kong-token:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    ConfigMapOptional:       <nil>
+    DownwardAPI:             true
+   kong-cluster-cert:
+    Type:          Secret (a volume populated by a Secret)
+    SecretName:    kong-cluster-cert
+    Optional:      false
+  Node-Selectors:  <none>
+  Tolerations:     <none>
+Conditions:
+  Type           Status  Reason
+  ----           ------  ------
+  Available      False   MinimumReplicasUnavailable
+  Progressing    True    ReplicaSetUpdated
+OldReplicaSets:  <none>
+NewReplicaSet:   kong-cp-kong-66f68f65cb (1/1 replicas created)
+Events:
+  Type    Reason             Age   From                   Message
+  ----    ------             ----  ----                   -------
+  Normal  ScalingReplicaSet  84s   deployment-controller  Scaled up replica set kong-cp-kong-66f68f65cb to 1
